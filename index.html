@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendices Aprobados – Física</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #003d5c 0%, #00597a 50%, #007499 100%);
+            padding: 0; margin: 0; min-height: 100vh; position: relative; overflow-x: hidden;
+        }
+
+        /* Partículas */
+        .floating-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .particle { position: absolute; font-size: 20px; opacity: 0.12; animation: float-p 15s infinite ease-in-out; color: #39a900; font-family: monospace; font-weight: 700; }
+        .particle:nth-child(1) { left: 5%;  animation-delay: 0s;   top: 15%; }
+        .particle:nth-child(2) { left: 18%; animation-delay: 2s;   top: 55%; }
+        .particle:nth-child(3) { left: 32%; animation-delay: 4s;   top: 75%; }
+        .particle:nth-child(4) { left: 50%; animation-delay: 1s;   top: 35%; }
+        .particle:nth-child(5) { left: 65%; animation-delay: 3s;   top: 65%; }
+        .particle:nth-child(6) { left: 80%; animation-delay: 5s;   top: 25%; }
+        .particle:nth-child(7) { left: 92%; animation-delay: 2.5s; top: 50%; }
+        @keyframes float-p {
+            0%, 100% { transform: translateY(0px)   rotate(0deg);   opacity: 0.12; }
+            25%       { transform: translateY(-30px) rotate(90deg);  opacity: 0.22; }
+            50%       { transform: translateY(-55px) rotate(180deg); opacity: 0.12; }
+            75%       { transform: translateY(-30px) rotate(270deg); opacity: 0.22; }
+        }
+
+        /* Contenedor */
+        .session-container {
+            width: 100%; margin: 0; background: #f5f7fa;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            animation: fadeInUp 0.8s ease-out;
+            position: relative; z-index: 1; min-height: 100vh;
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Franja animada */
+        .header-accent {
+            height: 5px;
+            background: linear-gradient(90deg, #39a900, #4cd137, #00c3ff, #39a900, #4cd137);
+            background-size: 400% 100%;
+            animation: gradientFlow 5s ease infinite;
+        }
+        @keyframes gradientFlow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        /* Encabezado */
+        .header-section {
+            background: linear-gradient(135deg, #002d45 0%, #003d5c 45%, #00597a 100%);
+            padding: 24px 36px 30px;
+            position: relative; overflow: hidden;
+        }
+        .header-section::after {
+            content: '';
+            position: absolute;
+            bottom: -20px; left: 0; right: 0;
+            height: 40px;
+            background: #f5f7fa;
+            border-radius: 60% 60% 0 0 / 100% 100% 0 0;
+        }
+        .header-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+            font-weight: 900;
+            line-height: 1.25;
+            margin: 0 0 8px;
+        }
+        .header-section h1 .green { color: #4cd137; }
+        .header-section .subtitle {
+            color: rgba(255,255,255,0.65);
+            font-size: clamp(0.78rem, 1.5vw, 0.92rem);
+            font-weight: 400;
+            margin: 0;
+        }
+        .header-trophy {
+            position: absolute; top: 18px; right: 36px;
+            font-size: 54px; opacity: 0.12;
+            pointer-events: none; user-select: none;
+        }
+
+        /* Confetti */
+        .confetti-row { display: flex; justify-content: center; gap: 7px; padding: 16px 0 6px; }
+        .dot { width: 9px; height: 9px; border-radius: 50%; }
+
+        /* Layout principal */
+        .main-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 10px 24px 24px;
+            background: #f5f7fa;
+        }
+        @media (min-width: 768px) {
+            .main-section {
+                grid-template-columns: 1fr 380px;
+                gap: 20px;
+                align-items: stretch;
+            }
+        }
+        .text-zone { display: flex; flex-direction: column; gap: 16px; }
+
+        .image-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Banner de felicitación */
+        .congrats-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #ffffff;
+            border: 1.5px solid #b8dff5;
+            border-left: 5px solid #00597a;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 12px rgba(0,89,122,0.07);
+        }
+        .congrats-banner-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+        .congrats-banner p { font-size: 0.87rem; color: #2c3e50; line-height: 1.7; }
+        .congrats-banner strong { color: #003d5c; font-weight: 700; }
+
+        /* Sección listado */
+        .list-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #ddeef7;
+            flex: 1;
+        }
+        .list-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 16px; padding-bottom: 12px;
+            border-bottom: 1.5px solid #e4f0f8;
+        }
+        .list-header-icon {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, #003d5c, #00597a);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .list-header-icon i { color: #fff; font-size: 15px; }
+        .list-header-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.82rem; font-weight: 700;
+            color: #003d5c; letter-spacing: 0.8px; text-transform: uppercase;
+        }
+        .list-count {
+            margin-left: auto;
+            background: #e8f5e9; color: #2e7d32;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72rem; font-weight: 700;
+            padding: 4px 12px; border-radius: 20px;
+            border: 1px solid #c8e6c9; white-space: nowrap;
+        }
+
+        /* Tarjetas */
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .student-card {
+            background: #f8fbfd;
+            border: 1.5px solid #d0e8f5;
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: box-shadow 0.2s, transform 0.2s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .student-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #39a900, #4cd137);
+            border-radius: 10px 0 0 10px;
+        }
+        .student-card:hover { box-shadow: 0 4px 14px rgba(0,89,122,0.13); transform: translateY(-2px); }
+        .student-icon-wrap {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .student-icon-wrap i { color: #2e7d32; font-size: 15px; }
+        .student-name {
+            font-size: 0.82rem; font-weight: 700;
+            color: #003d5c; line-height: 1.35;
+        }
+
+        /* Imagen */
+        .sidebar-image {
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+            transition: transform 0.4s ease;
+        }
+        .sidebar-image:hover { transform: scale(1.04); }
+        .sidebar-note {
+            color: #8a9baa; font-size: 0.72rem;
+            margin-top: 10px; text-align: center; line-height: 1.5;
+        }
+        .sidebar-note a { color: #39a900; text-decoration: none; }
+
+        /* Cita */
+        .quote-section {
+            background: #eaf3fb;
+            border-top: 1px solid #cde3f0;
+            border-bottom: 1px solid #cde3f0;
+            padding: 20px 40px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .quote-content {
+            display: flex; align-items: center; justify-content: center;
+            gap: 20px; max-width: 900px; width: 100%;
+        }
+        @media (max-width: 768px) { .quote-content { flex-direction: column; gap: 10px; } }
+        .quote-bar {
+            width: 5px; height: 48px;
+            background: linear-gradient(180deg, #39a900, #4cd137);
+            border-radius: 4px; flex-shrink: 0;
+        }
+        .quote-text-wrap { flex: 1; }
+        .quote-text {
+            font-family: 'Georgia', serif;
+            font-size: 0.92rem; font-style: italic;
+            color: #2c3e50; line-height: 1.65;
+        }
+        .quote-flourish {
+            display: block; margin: 8px 0 0;
+            width: 70px; height: 2px;
+            background: linear-gradient(to right, #39a900, transparent);
+            border-radius: 2px;
+        }
+        .feather-emoji {
+            font-size: 2rem;
+            animation: penWiggle 3s ease-in-out infinite;
+            display: block; flex-shrink: 0;
+        }
+        @keyframes penWiggle { 0%, 100% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(-12deg) translateY(-5px); } }
+        .quote-author {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.88rem; font-weight: 700;
+            color: #003d5c;
+            border-left: 4px solid #39a900;
+            padding-left: 10px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .quote-author span { display: block; font-size: 0.7rem; font-weight: 400; color: #7a8fa0; margin-top: 2px; }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #002d45 0%, #003d5c 50%, #00597a 100%);
+            color: white; padding: 14px 24px; text-align: center;
+        }
+        .footer .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.88rem; font-weight: 700; color: #39a900;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .footer .name i { color: rgba(255,255,255,0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="floating-particles">
+        <div class="particle">{ }</div>
+        <div class="particle">&lt;/&gt;</div>
+        <div class="particle">F=m·a</div>
+        <div class="particle">E=mc²</div>
+        <div class="particle">()</div>
+        <div class="particle">v=d/t</div>
+        <div class="particle">✓</div>
+    </div>
+
+    <div class="session-container">
+        <canvas id="confetti-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: block;"></canvas>
+
+        <div class="header-accent"></div>
+
+        <div class="header-section">
+            <div class="header-trophy">🏆</div>
+            <h1>Aprendices Aprobados – <span class="green">SST</span></h1>
+            <p class="subtitle">Aplicar prácticas de protección ambiental, seguridad y salud en el trabajo de acuerdo con las políticas organizacionales y la normatividad vigente.</p>
+        </div>
+
+        <div class="confetti-row">
+            <div class="dot" style="background:#f9c74f"></div>
+            <div class="dot" style="background:#39a900"></div>
+            <div class="dot" style="background:#00597a"></div>
+            <div class="dot" style="background:#4cd137"></div>
+            <div class="dot" style="background:#f94144"></div>
+            <div class="dot" style="background:#4361ee"></div>
+            <div class="dot" style="background:#39a900"></div>
+            <div class="dot" style="background:#f9c74f"></div>
+            <div class="dot" style="background:#00597a"></div>
+        </div>
+
+        <div class="main-section">
+
+            <div class="text-zone">
+
+                <div class="congrats-banner">
+                    <div class="congrats-banner-icon">🎉</div>
+                    <p>
+                        <strong>Estimados aprendices:</strong><br>
+                        Como instructor que los acompaño en esta competencia, quiero felicitar a los aprendices que han aprobado satisfactoriamente el
+                        <strong>100% de los Resultados de Aprendizaje (RA)</strong> asociados a la competencia
+                        <strong>Aplicar prácticas de protección ambiental, seguridad y salud en el trabajo de acuerdo con las políticas organizacionales y la normatividad vigente. (SST)</strong>.
+                    </p>
+                </div>
+
+                <div class="list-section">
+                    <div class="list-header">
+                        <div class="list-header-icon"><i class="fas fa-users"></i></div>
+                        <span class="list-header-text">Listado de Aprobados</span>
+                        <span class="list-count">12 aprendices</span>
+                    </div>
+                    <div class="students-grid">
+
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Edwin Alexander Alzate Arenas</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Darwin Silvio Carval Paso</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Duvan Antonio Castrillon Tuiran</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Monica Alejandra Castro Tafur</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Jessica Coaji Gomez</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Sergio Guevara Acosta</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Yerlis Tatiana Ochoa Galvan</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Nayith Tatiana Ortiz Enriquez</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Juan Felipe Ospina Jimenez</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Maria Paula Rodriguez Diaz</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Elkin Andres Rozo Cavanzo</div></div>
+                        <div class="student-card"><div class="student-icon-wrap"><i class="fas fa-user"></i></div><div class="student-name">Viviana Velasco Velasco</div></div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="image-zone">
+                <img
+                    src="https://drive.google.com/thumbnail?id=1bUN_wLBxS1AETbkihxz-gQuUE-5C4XYG&sz=w1000"
+                    alt="Aprobados – Aplicación de Conocimientos de las Ciencias Naturales (Física)"
+                    class="sidebar-image"
+                >
+                <p class="sidebar-note">Ilustración de SENA ·<br><a href="https://www.sena.edu.co" target="_blank">www.sena.edu.co</a></p>
+            </div>
+
+        </div>
+
+        <div class="quote-section">
+            <div class="quote-content">
+                <div class="quote-bar"></div>
+                <div class="quote-text-wrap">
+                    <p class="quote-text">El objetivo final de la agricultura no es el cultivo de cosechas, sino el cultivo y perfeccionamiento de los seres humanos.</p>
+                    <span class="quote-flourish"></span>
+                </div>
+                <span class="feather-emoji">🪶</span>
+                <div class="quote-author">
+                    Masanobu Fukuoka
+                    <span>Agricultor y filósofo japonés</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-accent"></div>
+
+        <div class="footer">
+            <p class="name"><i class="fas fa-user-tie"></i> Fabián Alexander García Martínez</p>
+        </div>
+
+        <div class="header-accent"></div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const confettiRow = document.querySelector('.confetti-row');
+            const canvas = document.getElementById('confetti-canvas');
+            let origin = { x: 0.5, y: 0.12 };
+
+            function updateCanvasSize() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                if (confettiRow) {
+                    const rect = confettiRow.getBoundingClientRect();
+                    const absoluteY = rect.top + window.scrollY - 4;
+                    origin = {
+                        x: (rect.left + rect.width / 2) / window.innerWidth,
+                        y: absoluteY / canvas.height
+                    };
+                }
+            }
+            updateCanvasSize();
+            window.addEventListener('load', updateCanvasSize);
+
+            const myConfetti = confetti.create(canvas, { resize: false, useWorker: true });
+            const colors = ['#f9c74f', '#39a900', '#00597a', '#4cd137', '#f94144', '#4361ee'];
+            const getShuffledColors = () => [...colors].sort(() => Math.random() - 0.5);
+
+            const end = Date.now() + 4000;
+            (function frame() {
+                myConfetti({ particleCount: 3, angle: 270, spread: 160, startVelocity: 5, origin: origin, colors: getShuffledColors() });
+                myConfetti({ particleCount: 2, angle: 200, spread: 60, startVelocity: 42, origin: origin, colors: getShuffledColors(), gravity: 0.85 });
+                myConfetti({ particleCount: 2, angle: 340, spread: 60, startVelocity: 42, origin: origin, colors: getShuffledColors(), gravity: 0.85 });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+
+            document.querySelectorAll('.student-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (rect.left + rect.width / 2) / window.innerWidth;
+                    const absoluteY = (rect.top + rect.height / 2) + window.scrollY;
+                    myConfetti({ particleCount: 35, spread: 70, origin: { x: x, y: absoluteY / canvas.height }, colors: getShuffledColors() });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
